@@ -43,6 +43,7 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
+                                            <th>Kode</th>
                                             <th>Nama Produk</th>
                                             <th>Stok</th>
                                             <th>Harga</th>
@@ -52,17 +53,50 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>
+                                        @forelse ($products as $row)
+                                            <tr>
+                                                <td>
+                                                    @if (!empty($row->photo))
+                                                        <img src="{{ asset('uploads/product/' . $row->photo) }}"
+                                                            alt="{{ $row->name }}" width="50px" height="50px">
+                                                    @else
+                                                        <img src="http://via.placeholder.com/50x50" alt="{{ $row->name }}">
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <strong>{{ $row->code }}</strong>
+                                                </td>
+                                                <td>
+                                                    <strong>{{ ucfirst($row->name) }}</strong>
+                                                </td>
+                                                <td>{{ $row->stock }}</td>
+                                                <td>Rp {{ number_format($row->price) }}</td>
+                                                <td>{{ $row->category->name }}</td>
+                                                <td>{{ $row->updated_at }}</td>
+                                                <td>
+                                                    <form action="{{ route('produk.destroy', $row->id) }}" method="POST">
+                                                        @csrf
+                                                        <input type="hidden" name="_method" value="DELETE">
+                                                        <a href="{{ route('produk.edit', $row->id) }}"
+                                                            class="btn btn-warning btn-sm">
+                                                            <i class="fa fa-edit"></i>
+                                                        </a>
+                                                        <button class="btn btn-danger btn-sm">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                            @empty
+                                            <tr>
+                                                <td colspan="7" class="text-center">Tidak ada data</td>
+                                            </tr>
+                                        @endforelse
                                     </tbody>
                                 </table>
+                            </div>
+                            <div class="float-right">
+                                {!! $products->links() !!}
                             </div>
                             @slot('footer')
 ​
